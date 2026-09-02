@@ -1,0 +1,66 @@
+who-gets-funded — initial post-harvest inspection, verbatim console output
+Run: 17 August 2026, Fazals-MacBook-Air (login 11:23:10)
+Script: 00_initial_inspection.sql
+Session captured with: script -q -a path/to/who-gets-funded/console.log
+
+$ cd path/to/who-gets-funded/data && ls -lh kiva_raw.sqlite && sqlite3 kiva_raw.sqlite < [inspection SQL]
+ls: kiva_raw.sqlite: No such file or directory
+
+$ cd ~/Downloads && ls -lh kiva_raw.sqlite && sqlite3 kiva_raw.sqlite < [inspection SQL]
+-rw-r--r--@ 1 user  staff    12G  7 Aug 02:25 kiva_raw.sqlite
+
+loans    pct_of_platform  batches
+-------  ---------------  -------
+3132059  99.34            64260
+
+status       n        mean_share
+-----------  -------  ----------
+funded       3024353  1.0
+expired      93321    0.4441
+refunded     10480    0.0
+fundraising  3905     0.1182
+
+first_posted          last_posted
+--------------------  --------------------
+2005-04-15T17:00:00Z  2026-08-06T20:51:45Z
+
+share_gt_1  overfunded  bad_amount  null_share  null_date  null_gender  null_sector  null_country
+----------  ----------  ----------  ----------  ---------  -----------  -----------  ------------
+0           4           0           0           0          0            0            0
+
+gender       n        expired  expiry_pct
+-----------  -------  -------  ----------
+female       2483698  45082    1.82
+male         648312   48238    7.44
+nonbinary    27       0        0.0
+unspecified  22       1        4.55
+
+typename     n
+-----------  -------
+LoanDirect   24116
+LoanPartner  3107943
+
+yr    n       no_expiry_date
+----  ------  --------------
+2005  55      55
+2006  3043    3043
+2007  25698   25698
+2008  50122   50122
+2009  81348   81348
+2010  92686   92686
+2011  112484  111961
+2012  134315  6897
+2013  141103  0
+2014  172954  0
+2015  182933  0
+2016  195885  0
+2017  225851  0
+2018  228354  0
+2019  218015  0
+2020  175312  0
+2021  209103  0
+2022  193236  0
+2023  194466  0
+2024  196017  0
+2025  193886  0
+2026  105193  0

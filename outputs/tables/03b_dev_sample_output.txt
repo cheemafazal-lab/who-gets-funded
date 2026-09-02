@@ -1,0 +1,19 @@
+reading strata keys from outputs/tables/feat_v1_full.csv ...
+  1,344,542 rows -> target 200,000, sampling fraction 0.148750
+  selected 200,003 rows across 28 strata
+writing outputs/tables/feat_v1_dev200k.csv ...
+  wrote 200,003 rows
+verifying marginals ...
+  wrote outputs/tables/feat_v1_sample_check.csv
+
+  full expiry 5.9495%    sample expiry 5.9494%
+  full naive MAE 0.032912    sample naive MAE 0.032941
+
+  largest marginal drifts (percentage points):
+    sector (% of rows)         Retail           +0.0783
+    country_iso (% of rows)    PH               +0.0771
+    sector (% of rows)         Food             -0.0708
+    country_iso (% of rows)    TJ               +0.0670
+    country_iso (% of rows)    KE               -0.0642
+
+  seed 40465466 — rerunning reproduces this exact sample

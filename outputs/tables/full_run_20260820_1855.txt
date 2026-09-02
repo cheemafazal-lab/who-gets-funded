@@ -1,0 +1,478 @@
+==========================================================================================
+who-gets-funded — tuned full-cohort pipeline
+==========================================================================================
+  03d   feature matrices to Parquet                   run
+  R010  tune the fractional model                     run
+  R011  tune the binary model                         run
+  R012  final fractional fit, full cohort             run
+  R013  final binary fit, full cohort                 run
+  R014  SHAP on the tuned model                       run
+  R015  counterfactual search, actual-short base      run
+  R016  fairness of recourse                          run
+  R017  group calibration and error rates             run
+  R018  final comparison folder                       run
+
+
+==========================================================================================
+>>> 03d  feature matrices to Parquet
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/features/03d_to_parquet.py
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  03d  feature matrices -> Parquet
+==========================================================================================
+  note: no schema entry for ['fundraising_date'] — pandas will infer these
+  reading outputs/tables/feat_v1_full.csv  (287 MB on disk)
+  1,344,542 rows x 54 cols
+  in memory, typed : 475 MB
+  parquet on disk  : 25 MB  (11.7x smaller)
+  wrote outputs/tables/feat_v1_full.parquet in 7s
+
+  note: no schema entry for ['fundraising_date'] — pandas will infer these
+  reading outputs/tables/feat_v1_dev200k.csv  (43 MB on disk)
+  200,003 rows x 54 cols
+  in memory, typed : 34 MB
+  parquet on disk  : 4 MB  (9.7x smaller)
+  wrote outputs/tables/feat_v1_dev200k.parquet in 0s
+
+  note: no schema entry for ['fundraising_date'] — pandas will infer these
+  reading outputs/tables/feat_oot_2020plus.csv  (267 MB on disk)
+  1,254,757 rows x 54 cols
+  in memory, typed : 523 MB
+  parquet on disk  : 21 MB  (12.5x smaller)
+  wrote outputs/tables/feat_oot_2020plus.parquet in 5s
+
+
+==========================================================================================
+03d complete
+==========================================================================================
+  3 file(s) written. Every later step now prefers the
+  .parquet automatically; the .csv files are left untouched.
+
+<<< 03d finished in 15s
+
+==========================================================================================
+>>> R010  tune the fractional model
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/models/13_tune_gbm.py --kind frac --n-draws 40 --resume --features outputs/tables/feat_v1_full.csv
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  tuning stage — loading training years only
+==========================================================================================
+  features : outputs/tables/feat_v1_full.csv
+  years    : 2013-2018  (2019 is the held-out test fold and is not read)
+  1,128,694 rows, 45 features, 399 MB in memory, loaded in 0s
+
+==========================================================================================
+who-gets-funded  R010  hyperparameter search — frac model
+==========================================================================================
+  inner validation years : [2017, 2018] (2019 never loaded)
+  selection metric       : composite, mean of RMSE and shortfall-MAE improvement vs B0 (lower is better)
+  inner fold: train 2013-2016 (678,354)  validate 2017 (223,854, 8,961 short, B0 RMSE 0.113719 / shortfall-MAE 0.521174)
+  inner fold: train 2013-2017 (902,208)  validate 2018 (226,486, 15,910 short, B0 RMSE 0.185991 / shortfall-MAE 0.670523)
+  fold matrices in memory: 155 MB
+  [  0/40] untuned default  score   -15.9098  iters 160|85        9.9s  elapsed 10s ETA 7m 00s  <-- best so far
+  [  1/40] random 1         score   -15.8254  iters 98|67        15.8s  elapsed 27s ETA 8m 46s
+  [  2/40] random 2         score   -16.4681  iters 1307|416     22.7s  elapsed 52s ETA 11m 08s  <-- best so far
+  [  3/40] random 3         score   -16.0688  iters 224|122      16.7s  elapsed 1m 10s ETA 10m 52s
+  [  4/40] random 4         score   -15.8605  iters 93|56        15.9s  elapsed 1m 26s ETA 10m 26s
+  [  5/40] random 5         score   -16.1758  iters 269|116      13.6s  elapsed 1m 41s ETA 9m 53s
+  [  6/40] random 6         score   -15.9463  iters 83|65        16.3s  elapsed 1m 58s ETA 9m 35s
+  [  7/40] random 7         score   -15.8542  iters 206|150      25.5s  elapsed 2m 25s ETA 9m 59s
+  [  8/40] random 8         score   -16.2425  iters 214|66        8.9s  elapsed 2m 34s ETA 9m 10s
+  [  9/40] random 9         score   -15.9930  iters 207|146      25.6s  elapsed 3m 01s ETA 9m 24s
+  [ 10/40] random 10        score   -16.6649  iters 1491|481     31.0s  elapsed 3m 37s ETA 9m 52s  <-- best so far
+  [ 11/40] random 11        score   -15.7473  iters 76|51        17.0s  elapsed 3m 54s ETA 9m 27s
+  [ 12/40] random 12        score   -16.0202  iters 239|150      31.1s  elapsed 4m 27s ETA 9m 36s
+  [ 13/40] random 13        score   -16.0661  iters 111|51       17.0s  elapsed 4m 45s ETA 9m 10s
+  [ 14/40] random 14        score   -16.2818  iters 412|147      16.8s  elapsed 5m 03s ETA 8m 46s
+  [ 15/40] random 15        score   -16.1829  iters 233|112      23.3s  elapsed 5m 28s ETA 8m 33s
+  [ 16/40] random 16        score   -15.8809  iters 305|183      23.4s  elapsed 5m 53s ETA 8m 19s
+  [ 17/40] random 17        score   -16.6418  iters 570|134      13.4s  elapsed 6m 08s ETA 7m 50s
+  [ 18/40] random 18        score   -16.1270  iters 234|124      19.6s  elapsed 6m 29s ETA 7m 30s
+  [ 19/40] random 19        score   -16.0956  iters 152|67       18.6s  elapsed 6m 48s ETA 7m 09s
+  [ 20/40] random 20        score   -15.9488  iters 338|152      27.3s  elapsed 7m 18s ETA 6m 57s
+  [ 21/40] random 21        score   -15.8521  iters 134|68       19.2s  elapsed 7m 38s ETA 6m 35s
+  [ 22/40] random 22        score   -16.3739  iters 689|223      24.0s  elapsed 8m 05s ETA 6m 19s
+  [ 23/40] random 23        score   -16.4814  iters 599|275      23.5s  elapsed 8m 30s ETA 6m 01s
+  [ 24/40] random 24        score   -16.4312  iters 1646|411     34.6s  elapsed 9m 09s ETA 5m 51s
+  [ 25/40] random 25        score   -16.1996  iters 126|45       16.1s  elapsed 9m 26s ETA 5m 26s
+  [ 26/40] random 26        score   -16.2965  iters 153|77       15.2s  elapsed 9m 42s ETA 5m 02s
+  [ 27/40] random 27        score   -15.8535  iters 103|53       18.7s  elapsed 10m 01s ETA 4m 39s
+  [ 28/40] random 28        score   -16.0611  iters 107|51       10.3s  elapsed 10m 12s ETA 4m 13s
+  [ 29/40] random 29        score   -15.9389  iters 107|79       15.4s  elapsed 10m 28s ETA 3m 50s
+  [ 30/40] random 30        score   -16.4894  iters 281|154      16.7s  elapsed 10m 46s ETA 3m 28s
+  [ 31/40] random 31        score   -15.7534  iters 106|68       20.0s  elapsed 11m 07s ETA 3m 07s
+  [ 32/40] random 32        score   -16.5376  iters 766|232      21.9s  elapsed 11m 31s ETA 2m 47s
+  [ 33/40] random 33        score   -16.4259  iters 412|111      16.6s  elapsed 11m 49s ETA 2m 26s
+  [ 34/40] random 34        score   -16.1362  iters 294|142      23.9s  elapsed 12m 15s ETA 2m 06s
+  [ 35/40] random 35        score   -16.4591  iters 213|111      13.5s  elapsed 12m 29s ETA 1m 44s
+  [ 36/40] random 36        score   -16.2540  iters 437|183      31.7s  elapsed 13m 03s ETA 1m 24s
+  [ 37/40] random 37        score   -16.2779  iters 372|152      11.9s  elapsed 13m 16s ETA 1m 02s
+  [ 38/40] random 38        score   -16.0921  iters 163|50        8.7s  elapsed 13m 26s ETA 41s
+  [ 39/40] random 39        score   -15.9557  iters 80|43        12.5s  elapsed 13m 39s ETA 20s
+  [ 40/40] random 40        score   -16.1172  iters 111|55       14.1s  elapsed 13m 53s ETA 0s
+
+  WINNER  candidate 10 (random 10)  score -16.6649
+  untuned default score -15.9098  ->  tuning improves on the untuned default
+  parameters -> outputs/models/R010_best_params_frac.json
+  figure -> outputs/figures/F25_tuning_traces.png
+
+==========================================================================================
+tuning complete
+==========================================================================================
+  next: python3 src/models/14_final_fits.py --features outputs/tables/feat_v1_full.csv
+
+<<< R010 finished in 839s
+
+==========================================================================================
+>>> R011  tune the binary model
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/models/13_tune_gbm.py --kind binary --n-draws 40 --resume --features outputs/tables/feat_v1_full.csv
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  tuning stage — loading training years only
+==========================================================================================
+  features : outputs/tables/feat_v1_full.csv
+  years    : 2013-2018  (2019 is the held-out test fold and is not read)
+  1,128,694 rows, 45 features, 399 MB in memory, loaded in 0s
+
+==========================================================================================
+who-gets-funded  R011  hyperparameter search — binary model
+==========================================================================================
+  inner validation years : [2017, 2018] (2019 never loaded)
+  selection metric       : mean PR-AUC on the shortfall class (higher is better)
+  inner fold: train 2013-2016 (678,354)  validate 2017 (223,854, 8,961 short, B0 RMSE 0.113719 / shortfall-MAE 0.521174)
+  inner fold: train 2013-2017 (902,208)  validate 2018 (226,486, 15,910 short, B0 RMSE 0.185991 / shortfall-MAE 0.670523)
+  fold matrices in memory: 155 MB
+  [  0/40] untuned default  score     0.3898  iters 134|104      13.1s  elapsed 14s ETA 9m 23s  <-- best so far
+  [  1/40] random 1         score     0.3936  iters 89|61        21.1s  elapsed 36s ETA 11m 43s  <-- best so far
+  [  2/40] random 2         score     0.4033  iters 910|522      38.5s  elapsed 1m 18s ETA 16m 31s  <-- best so far
+  [  3/40] random 3         score     0.3937  iters 171|118      29.6s  elapsed 1m 49s ETA 16m 52s
+  [  4/40] random 4         score     0.3953  iters 82|51        23.3s  elapsed 2m 13s ETA 16m 01s
+  [  5/40] random 5         score     0.3939  iters 161|116      14.8s  elapsed 2m 29s ETA 14m 31s
+  [  6/40] random 6         score     0.3942  iters 78|66        20.4s  elapsed 2m 50s ETA 13m 48s
+  [  7/40] random 7         score     0.3909  iters 191|151      33.7s  elapsed 3m 25s ETA 14m 09s
+  [  8/40] random 8         score     0.3937  iters 105|70        8.8s  elapsed 3m 35s ETA 12m 45s
+  [  9/40] random 9         score     0.3927  iters 171|145      28.8s  elapsed 4m 05s ETA 12m 41s
+  [ 10/40] random 10        score     0.4033  iters 989|481      29.7s  elapsed 4m 38s ETA 12m 40s  <-- best so far
+  [ 11/40] random 11        score     0.3902  iters 72|62        22.0s  elapsed 5m 01s ETA 12m 08s
+  [ 12/40] random 12        score     0.4000  iters 183|150      36.3s  elapsed 5m 39s ETA 12m 11s
+  [ 13/40] random 13        score     0.3903  iters 71|52        17.9s  elapsed 5m 58s ETA 11m 30s
+  [ 14/40] random 14        score     0.3961  iters 261|146      14.3s  elapsed 6m 13s ETA 10m 48s
+  [ 15/40] random 15        score     0.3997  iters 181|112      24.3s  elapsed 6m 39s ETA 10m 24s
+  [ 16/40] random 16        score     0.3919  iters 277|202      28.7s  elapsed 7m 10s ETA 10m 08s
+  [ 17/40] random 17        score     0.4035  iters 372|152      16.5s  elapsed 7m 28s ETA 9m 33s  <-- best so far
+  [ 18/40] random 18        score     0.3956  iters 161|124      21.0s  elapsed 7m 51s ETA 9m 05s
+  [ 19/40] random 19        score     0.3969  iters 106|70       21.2s  elapsed 8m 13s ETA 8m 37s
+  [ 20/40] random 20        score     0.3952  iters 265|220      26.6s  elapsed 8m 42s ETA 8m 17s
+  [ 21/40] random 21        score     0.3974  iters 107|80       21.8s  elapsed 9m 04s ETA 7m 50s
+  [ 22/40] random 22        score     0.3972  iters 370|255      21.6s  elapsed 9m 28s ETA 7m 24s
+  [ 23/40] random 23        score     0.4000  iters 437|256      21.7s  elapsed 9m 51s ETA 6m 59s
+  [ 24/40] random 24        score     0.4021  iters 1178|482     36.5s  elapsed 10m 33s ETA 6m 45s
+  [ 25/40] random 25        score     0.3948  iters 90|51        18.0s  elapsed 10m 51s ETA 6m 16s
+  [ 26/40] random 26        score     0.3915  iters 109|57       15.0s  elapsed 11m 07s ETA 5m 46s
+  [ 27/40] random 27        score     0.3978  iters 87|61        21.1s  elapsed 11m 29s ETA 5m 20s
+  [ 28/40] random 28        score     0.3892  iters 90|64        11.1s  elapsed 11m 41s ETA 4m 50s
+  [ 29/40] random 29        score     0.3961  iters 117|79       17.4s  elapsed 11m 59s ETA 4m 23s
+  [ 30/40] random 30        score     0.4029  iters 277|150      19.3s  elapsed 12m 20s ETA 3m 58s
+  [ 31/40] random 31        score     0.3928  iters 95|81        25.1s  elapsed 12m 46s ETA 3m 35s
+  [ 32/40] random 32        score     0.4006  iters 448|234      22.0s  elapsed 13m 10s ETA 3m 11s
+  [ 33/40] random 33        score     0.3983  iters 206|125      15.2s  elapsed 13m 27s ETA 2m 46s
+  [ 34/40] random 34        score     0.3947  iters 219|137      22.2s  elapsed 13m 50s ETA 2m 22s
+  [ 35/40] random 35        score     0.3984  iters 196|90       13.0s  elapsed 14m 04s ETA 1m 57s
+  [ 36/40] random 36        score     0.3974  iters 280|223      29.5s  elapsed 14m 36s ETA 1m 34s
+  [ 37/40] random 37        score     0.4012  iters 381|147      15.0s  elapsed 14m 53s ETA 1m 10s
+  [ 38/40] random 38        score     0.3912  iters 127|77       10.3s  elapsed 15m 04s ETA 46s
+  [ 39/40] random 39        score     0.3922  iters 70|48        13.9s  elapsed 15m 19s ETA 22s
+  [ 40/40] random 40        score     0.3942  iters 88|67        15.2s  elapsed 15m 35s ETA 0s
+
+  WINNER  candidate 17 (random 17)  score 0.4035
+  untuned default score 0.3898  ->  tuning improves on the untuned default
+  parameters -> outputs/models/R011_best_params_binary.json
+  figure -> outputs/figures/F25_tuning_traces.png
+
+==========================================================================================
+tuning complete
+==========================================================================================
+  next: python3 src/models/14_final_fits.py --features outputs/tables/feat_v1_full.csv
+
+<<< R011 finished in 939s
+
+==========================================================================================
+>>> R012  final fractional fit, full cohort
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/models/14_final_fits.py --kind frac --features outputs/tables/feat_v1_full.csv
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R012 / R013  final fits on the full cohort
+==========================================================================================
+  engine   : lightgbm
+  features : outputs/tables/feat_v1_full.csv
+  1,344,542 rows, 45 features, 475 MB in memory, loaded in 0s
+  posting years present: 2013-2019
+  parameters: tuned, R010 candidate 10 (random 10), selected on composite RMSE + shortfall-MAE vs B0
+              {"cat_l2": 50.0, "cat_smooth": 50.0, "colsample_bytree": 0.9215712744355284, "learning_rate": 0.021599249266361423, "max_cat_threshold": 16, "min_child_samples": 133, "min_split_gain": 0.0, "n_estimators": 3000, "num_leaves": 15, "reg_alpha": 0.0, "reg_lambda": 5.0, "subsample": 0.6945534340208338, "subsample_freq": 1}
+
+==========================================================================================
+R012  fractional target, tuned, full cohort
+==========================================================================================
+  2016: train   484,176  test  194,178  iters  182  RMSE   -9.86%  shortfall-MAE  -14.79%  (3s)
+  2017: train   678,354  test  223,854  iters  651  RMSE   -8.89%  shortfall-MAE  -20.78%  (13s)
+  2018: train   902,208  test  226,486  iters 2208  RMSE  -13.03%  shortfall-MAE  -17.46%  (41s)
+  2019: train 1,128,694  test  215,848  iters  475  RMSE  -11.15%  shortfall-MAE  -15.28%  (14s)
+
+  fold means: RMSE -10.73%  shortfall-MAE -17.08%  vs B0
+
+==========================================================================================
+R012  canonical model (train 2013-2018) for SHAP and counterfactuals
+==========================================================================================
+  fitted on 1,128,694 rows in 14s (best iteration 475)
+  model saved -> outputs/models/R012_gbm_frac.pkl  (1.0 MB)
+  test-2019 predictions -> R012_test2019_predictions.csv (215,848 rows)
+  figure -> outputs/figures/F26_tuned_gain_importance.png
+
+==========================================================================================
+R012 / R013 complete
+==========================================================================================
+  next: steps 09 (SHAP), 10 (counterfactuals), 11 (recourse), 15 (group calibration), 12 (comparison)
+
+<<< R012 finished in 97s
+
+==========================================================================================
+>>> R013  final binary fit, full cohort
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/models/14_final_fits.py --kind binary --features outputs/tables/feat_v1_full.csv
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R012 / R013  final fits on the full cohort
+==========================================================================================
+  engine   : lightgbm
+  features : outputs/tables/feat_v1_full.csv
+  1,344,542 rows, 45 features, 475 MB in memory, loaded in 0s
+  posting years present: 2013-2019
+  parameters: tuned, R011 candidate 17 (random 17), selected on PR-AUC on shortfall
+              {"cat_l2": 50.0, "cat_smooth": 200.0, "colsample_bytree": 0.964857834193857, "learning_rate": 0.062340082022397346, "max_cat_threshold": 16, "min_child_samples": 20, "min_split_gain": 0.0, "n_estimators": 3000, "num_leaves": 15, "reg_alpha": 0.0, "reg_lambda": 5.0, "subsample": 0.7631713780950904, "subsample_freq": 1}
+
+==========================================================================================
+R013  auxiliary binary model, tuned, full cohort
+==========================================================================================
+  2016: train   484,176  AUC 0.8890  PR-AUC 0.3827 (floor 0.0710)  (2s)
+  2017: train   678,354  AUC 0.9058  PR-AUC 0.3057 (floor 0.0400)  (5s)
+  2018: train   902,208  AUC 0.9216  PR-AUC 0.4601 (floor 0.0702)  (10s)
+  2019: train 1,128,694  AUC 0.8963  PR-AUC 0.3738 (floor 0.0704)  (6s)
+
+  fold means: AUC 0.9032  PR-AUC 0.3806
+
+==========================================================================================
+R013  canonical model (train 2013-2018) for the counterfactual step
+==========================================================================================
+  fitted on 1,128,694 rows in 6s (best iteration 125)
+  model saved -> outputs/models/R013_gbm_binary.pkl  (0.3 MB)
+  test-2019 scores -> R013_test2019_scores.csv (215,848 rows)
+  figure -> outputs/figures/F27_tuned_binary_roc_pr.png
+
+==========================================================================================
+R012 / R013 complete
+==========================================================================================
+  next: steps 09 (SHAP), 10 (counterfactuals), 11 (recourse), 15 (group calibration), 12 (comparison)
+
+<<< R013 finished in 39s
+
+==========================================================================================
+>>> R014  SHAP on the tuned model
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/explain/09_shap_analysis.py --model-run R012 --out-id R014 --sample-n 50000 --features outputs/tables/feat_v1_full.csv
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R014 SHAP (exact TreeSHAP via native pred_contrib)
+==========================================================================================
+  model: R012 lightgbm, train 2013-2018  [tuned]
+  explaining 50,000 of 215,848 test-2019 rows (seed 40465466)
+  contributions computed in 7s  (50,000 x 46)
+
+  top 10 by mean |SHAP| (log-odds scale; base value 5.9001):
+ rank               feature  mean_abs_shap  mean_shap_signed  share_of_total_pct
+    1 lender_repayment_term        1.12314          -0.06876            25.58080
+    2       log_loan_amount        0.87226           0.12518            19.86667
+    3                gender        0.34699           0.02983             7.90312
+    4            partner_id        0.32582           0.06516             7.42082
+    5           n_tags_desc        0.28820          -0.05522             6.56398
+    6           posting_doy        0.27646          -0.00249             6.29667
+    7   amount_per_borrower        0.20687          -0.03200             4.71174
+    8              activity        0.17597          -0.00293             4.00792
+    9                sector        0.14043          -0.00463             3.19856
+   10           country_iso        0.12840           0.01668             2.92441
+  dependence data for ['lender_repayment_term', 'log_loan_amount', 'gender', 'partner_id']... -> R014_shap_dependence_top8.csv
+  figure -> outputs/figures/F32_shap_global_bar.png
+  figure -> outputs/figures/F33_shap_beeswarm.png
+  figure -> outputs/figures/F34_shap_gender_compare.png
+
+==========================================================================================
+R014 complete
+==========================================================================================
+
+<<< R014 finished in 10s
+
+==========================================================================================
+>>> R015  counterfactual search, actual-short base
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/explain/10_counterfactuals.py --model-run R013 --out-id R015 --base actual-short --threshold 0.975 --max-changes 3 --n-instances 0 --features outputs/tables/feat_v1_full.csv
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R007 counterfactual recourse search (binary aux model)
+==========================================================================================
+  test-2019: 215,848 loans; base = loans that actually fell short: 15,188
+  of those, 1,234 already score at or above the target (8.1%) — kept, flagged, reported both ways
+  attempting 15,188 instances (gender mix preserved: {'female': np.int64(7919), 'male': np.int64(7269)})
+  text targets (train-funded p50/p75/p90): {'use_text_length': [56, 78, 102], 'description_length': [620, 826, 1071]}
+  action set: 27 candidate moves in 8 families; protected attributes frozen
+
+  [..................................]   0.0%        0/3  0s elapsed  ETA 0s  depth 1: 331,207 candidates   
+  [###########.......................]  33.3%        1/3  36s elapsed  ETA 1m 12s  depth 1: 5,903 flipped        
+  [###########.......................]  33.3%        1/3  36s elapsed  ETA 1m 12s  depth 2: 156,618 candidates   
+  [######################............]  66.7%        2/3  1m 00s elapsed  ETA 30s  depth 2: 8,639 flipped        
+  [######################............]  66.7%        2/3  1m 00s elapsed  ETA 30s  depth 3: 66,562 candidates    
+  [##################################] 100.0%        3/3  1m 16s elapsed  ETA 0s  depth 3: 9,163 flipped        
+
+                                              reading  attempted  feasible  feasibility_pct  median_distance  mean_distance  median_changes  median_amount_cut_pct         base  threshold  max_changes   engine
+all in base (already-at-target counted at distance 0)      15188      9163            60.33             0.76         0.9386             1.0                   50.0 actual-short      0.975            3 lightgbm
+                          excluding already-at-target      13954      7929            56.82             0.76         1.0847             1.0                   50.0 actual-short      0.975            3 lightgbm
+
+  already at target: 1,234 of 15,188 — the model did not flag these despite their actual shortfall
+  figure -> outputs/figures/F28_cf_actions.png
+
+==========================================================================================
+R015 complete — the recourse audit step reads these by group
+==========================================================================================
+
+<<< R015 finished in 79s
+
+==========================================================================================
+>>> R016  fairness of recourse
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/equity/11_recourse_audit.py --cf-id R015 --out-id R016
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R016 fairness of recourse
+==========================================================================================
+  15,188 instances (female 7,919, male 7,269)
+  1,234 already at target before any change (8.1%)
+
+  BY GENDER (raw, both readings)
+
+                    reading  group  attempted  feasible  feasibility_pct  median_distance  mean_distance  median_changes  median_amount_cut_pct
+                all in base female       7919      6081            76.79             0.76         0.9389             1.0                   40.0
+                all in base   male       7269      3082            42.40             0.76         0.9381             1.0                   50.0
+                all in base    all      15188      9163            60.33             0.76         0.9386             1.0                   50.0
+excluding already-at-target female       7018      5180            73.81             0.76         1.1022             1.0                   40.0
+excluding already-at-target   male       6936      2749            39.63             0.76         1.0517             1.0                   50.0
+excluding already-at-target    all      13954      7929            56.82             0.76         1.0847             1.0                   50.0
+
+  tests and figure use: excluding already-at-target (n=13,954)
+
+  TESTS (no interpretation here)
+
+                    reading                                         test        stat      p_value                    effect
+excluding already-at-target feasibility two-proportion z (female - male)      40.752 0.000000e+00                  +34.18pp
+excluding already-at-target  Mann-Whitney U on distance (successful CFs) 7426683.500 1.328495e-03 median F 0.760 vs M 0.760
+excluding already-at-target Mann-Whitney U on n_changes (successful CFs) 7735190.000 2.828523e-13 median F 1.000 vs M 1.000
+
+  WITHIN COUNTRY x SECTOR (56 cells with >= 10 of each gender)
+    median within-cell distance gap (F - M): +0.1999   cells where women need more: 28/55
+  figure -> outputs/figures/F29_recourse_gap.png
+
+==========================================================================================
+R016 complete
+==========================================================================================
+
+<<< R016 finished in 1s
+
+==========================================================================================
+>>> R017  group calibration and error rates
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/equity/15_group_calibration.py --pred-id R012 --score-id R013 --out-id R017
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R017  group calibration and error rates
+==========================================================================================
+  test-2019: 215,848 loans, 15,188 short (7.036%)
+  operating points: p_short >= 0.500 (default) and >= 0.1959 (top 7.04%, prevalence-matched)
+    skip country_iso=IN: no shortfall loans in group
+
+  CALIBRATION — gender and overall
+
+dimension  group      n  observed_short_rate  mean_predicted  bias_pred_minus_obs      ece  calib_intercept  calib_slope
+  overall    all 215848             0.070364        0.045585            -0.024779 0.025063           0.3520       0.8843
+   gender female 170458             0.046457        0.030317            -0.016140 0.016439           0.2597       0.8851
+   gender   male  45390             0.160145        0.102923            -0.057222 0.057308           0.3750       0.8186
+
+  ERROR RATES — gender and overall
+
+dimension  group      n  operating_point   cutoff  prevalence  n_flagged  tpr_recall      fpr      fnr  precision  selection_rate
+  overall    all 215848           p>=0.5 0.500000    0.070364       1607    0.065249 0.003070 0.934751   0.616677        0.007445
+  overall    all 215848 top-K prevalence 0.195867    0.070364      15189    0.390111 0.046168 0.609889   0.390085        0.070369
+   gender female 170458           p>=0.5 0.500000    0.046457        318    0.019447 0.001009 0.980553   0.484277        0.001866
+   gender female 170458 top-K prevalence 0.195867    0.046457       6419    0.248769 0.027372 0.751231   0.306901        0.037657
+   gender   male  45390           p>=0.5 0.500000    0.160145       1289    0.115147 0.011857 0.884853   0.649341        0.028398
+   gender   male  45390 top-K prevalence 0.195867    0.160145       8770    0.544091 0.126308 0.455909   0.450969        0.193214
+
+  FRACTIONAL ERROR — gender and overall  (positive signed error = model over-predicts the share raised)
+
+dimension  group      n      mae     rmse  mae_short  n_short  mean_signed_error  mean_actual  mean_pred
+  overall    all 215848 0.056937 0.169024   0.583587    15188           0.025101     0.951535   0.976636
+   gender female 170458 0.039564 0.140079   0.599476     7919           0.016104     0.968616   0.984720
+   gender   male  45390 0.122182 0.249337   0.566277     7269           0.058890     0.887388   0.946278
+  figure -> outputs/figures/F30_calibration_by_gender.png
+  figure -> outputs/figures/F31_error_rates_by_group.png
+
+==========================================================================================
+R017 complete
+==========================================================================================
+  this closes equity-audit layer 2; the status board entry can move from amber to complete once the numbers are filed in RESULTS_LOG.
+
+<<< R017 finished in 2s
+
+==========================================================================================
+>>> R018  final comparison folder
+    /Library/Developer/CommandLineTools/usr/bin/python3 src/models/16_compare_final.py
+==========================================================================================
+
+==========================================================================================
+who-gets-funded  R018  final comparison
+==========================================================================================
+
+  C2  FRACTIONAL HEADLINE (fold means, negative beats the floor)
+
+                           model      sample  mean_mae  mean_rmse  mean_mae_short  mae_vs_b0_pct  rmse_vs_b0_pct  mae_short_vs_b0_pct
+         B0 naive (constant 1.0) full cohort  0.038958   0.162481        0.608900           0.00            0.00                 0.00
+           R002 fractional logit    dev 200k  0.051216   0.148936        0.519281          31.46           -8.34               -14.72
+R003 gradient boosting (untuned)    dev 200k  0.046916   0.145841        0.506630          20.43          -10.24               -16.80
+  R012 gradient boosting (tuned) full cohort  0.047496   0.144651        0.505719          21.92          -10.97               -16.95
+
+  C3  BINARY AUXILIARY MODEL
+
+                                          auc  pr_auc_short  pr_auc_floor   brier
+model                     sample                                                 
+R004 binary aux (untuned) dev 200k     0.9014        0.3718        0.0629  0.0481
+R013 binary aux (tuned)   full cohort  0.9032        0.3806        0.0629  0.0475
+
+  C4  TUNING
+
+ run   kind  candidates_evaluated  untuned_score  best_score  best_candidate
+R010   frac                    41     -15.909761  -16.664851              10
+R011 binary                    41       0.389801    0.403492              17
+  figure -> outputs/figures/F35_all_models_by_fold.png
+  figure -> outputs/figures/F36_binary_untuned_vs_tuned.png
+
+==========================================================================================
+R018 complete
+==========================================================================================
+  outputs/final_comparison/
+
+<<< R018 finished in 1s
+
+==========================================================================================
+ALL STEPS COMPLETE in 33.7 min
+  outputs/final_comparison/  holds the assembled comparison
+==========================================================================================

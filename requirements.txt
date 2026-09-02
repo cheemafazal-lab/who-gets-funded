@@ -1,0 +1,22 @@
+# Core
+pandas>=2.0,<3.0
+numpy>=2.0,<3.0
+pyarrow>=15.0
+
+# Models
+lightgbm==4.6.0
+scikit-learn>=1.4,<2.0
+statsmodels>=0.14
+scipy>=1.11
+
+# Figures
+matplotlib>=3.8
+
+# Standard library used elsewhere (no install required):
+#   sqlite3, urllib, json, pickle, argparse, csv, gc, pathlib
+#
+# Deliberately not used, each with a reason recorded in the technical report:
+#   shap      - exact TreeSHAP taken from LightGBM's native pred_contrib
+#   dice-ml   - counterfactual search implemented in-repo so the constraint
+#               set matches the actionability table exactly
+#   xgboost   - coded as a fallback engine, never used for reported results

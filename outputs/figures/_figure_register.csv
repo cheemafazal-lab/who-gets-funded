@@ -1,0 +1,37 @@
+figure_id,file,title,produced_by,run,stage,status
+F01,F01_outcome_composition.png,Outcome composition across the harvest,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F02,F02_expiry_by_year.png,Expiry rate by posting year,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F03,F03_expiry_gender_by_sector.png,Expiry by gender within sector,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F04,F04_expired_shortfall.png,How far short expired loans fell,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F05,F05_amount_band_expiry_and_gender.png,Expiry and gender by loan amount band,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F06,F06_country_expiry.png,Expiry rate by country,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F07,F07_partner_concentration.png,Field partner concentration,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F08,F08_expiry_date_availability.png,Availability of planned expiration date by year,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F09,F09_loan_amount_quantiles.png,Loan amount quantiles,src/ingest/01c_make_descriptive_figures.py,—,descriptive,current
+F10,F10_gap_crude_vs_standardised.png,Gender gap crude versus directly standardised,src/ingest/01d_make_composition_figures.py,—,composition,current
+F11,F11_gap_by_country.png,Gender gap by country,src/ingest/01d_make_composition_figures.py,—,composition,current
+F12,F12_within_cohort_drift.png,Within-cohort drift in expiry and naive floor,src/ingest/01d_make_composition_figures.py,—,composition,current
+F13,F13_gbm_gain_importance.png,GBM gain importance top 15 (untuned dev sample),src/models/06_gbm_temporal_cv.py,R003,modelling,superseded by F26
+F14,F14_binary_roc_pr.png,Binary aux ROC and PR (untuned dev sample),src/models/07_gbm_binary_aux.py,R004,modelling,superseded by F27
+F15,F15_oot_degradation.png,Out-of-regime degradation 2020-2026,src/models/08_oot_regime_test.py,R005,transportability,current
+F16,F16_shap_global_bar.png,SHAP global importance (untuned dev sample),src/explain/09_shap_analysis.py,R006,explanation,superseded by F32
+F17,F17_shap_beeswarm.png,SHAP beeswarm (untuned dev sample),src/explain/09_shap_analysis.py,R006,explanation,superseded by F33
+F18,F18_shap_gender_compare.png,SHAP by gender (untuned dev sample),src/explain/09_shap_analysis.py,R006,explanation,superseded by F34
+F19,F19_cf_actions.png,Counterfactual action families (289-instance base),src/explain/10_counterfactuals.py,R007,recourse,superseded by F28
+F20,F20_recourse_gap.png,Recourse distance and feasibility by gender (289 base),src/equity/11_recourse_audit.py,R008,recourse,superseded by F29
+F21,F21_mae_by_fold.png,MAE by fold across models (dev sample),src/models/12_compare_models.py,R009,comparison,superseded by F35
+F22,F22_mae_short_by_fold.png,Shortfall-MAE by fold across models (dev sample),src/models/12_compare_models.py,R009,comparison,superseded by F35
+F23,F23_rmse_by_fold.png,RMSE by fold across models (dev sample),src/models/12_compare_models.py,R009,comparison,superseded by F35
+F24,F24_architecture.png,Pipeline architecture as built,src/make_architecture.py,—,documentation,current
+F25,F25_tuning_traces.png,Random search traces fractional and binary,src/models/13_tune_gbm.py,R010/R011,tuning,current
+F26,F26_tuned_gain_importance.png,Gain importance tuned full cohort,src/models/14_final_fits.py,R012,modelling,current
+F27,F27_tuned_binary_roc_pr.png,Tuned binary aux ROC and PR full cohort,src/models/14_final_fits.py,R013,modelling,current
+F28,F28_cf_actions.png,Counterfactual action families (actual-short base),src/explain/10_counterfactuals.py,R015,recourse,current
+F29,F29_recourse_gap.png,Recourse feasibility and distance by gender at scale,src/equity/11_recourse_audit.py,R016,recourse,current
+F30,F30_calibration_by_gender.png,Within-group calibration by gender,src/equity/15_group_calibration.py,R017,equity,current
+F31,F31_error_rates_by_group.png,Error rates by group,src/equity/15_group_calibration.py,R017,equity,current
+F32,F32_shap_global_bar.png,SHAP global importance tuned full cohort,src/explain/09_shap_analysis.py,R014,explanation,current
+F33,F33_shap_beeswarm.png,SHAP beeswarm tuned full cohort,src/explain/09_shap_analysis.py,R014,explanation,current
+F34,F34_shap_gender_compare.png,SHAP by gender tuned full cohort,src/explain/09_shap_analysis.py,R014,explanation,current
+F35,F35_all_models_by_fold.png,All fractional models against B0 by test year,src/models/16_compare_final.py,R018,comparison,current
+F36,F36_binary_untuned_vs_tuned.png,Binary aux model untuned versus tuned,src/models/16_compare_final.py,R018,comparison,current

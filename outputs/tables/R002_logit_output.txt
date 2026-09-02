@@ -1,0 +1,98 @@
+
+==========================================================================================
+who-gets-funded  R002 fractional logit (GLM binomial / logit, QMLE, HC0)
+==========================================================================================
+  features    : outputs/tables/feat_v1_dev200k.csv  (43.2 MB)
+  min-count   : 500 rows per level
+  min-events  : 25 shortfall events per level (separation guard)
+  no partner fixed effects; activity, region, posting_year, loan_amount excluded
+  loaded 200,003 rows in 0s
+  8,970 rows (4.48%) lack narrative length; median-imputed from train, no missingness indicator (see file header)
+
+==========================================================================================
+Step 1 of 2  temporal cross-validation (4 folds)
+==========================================================================================
+
+  [..................................]   0.0%  0/4  0s elapsed  ETA 0s  2016: building design             
+  [..................................]   0.0%  0/4  0s elapsed  ETA 0s  2016: fitting 90 params           
+  [########..........................]  25.0%  1/4  2s elapsed  ETA 8s  2016: done                        
+  [########..........................]  25.0%  1/4  2s elapsed  ETA 8s  2017: building design             
+  [########..........................]  25.0%  1/4  3s elapsed  ETA 10s  2017: fitting 97 params           
+  [#################.................]  50.0%  2/4  7s elapsed  ETA 7s  2017: done                        
+  [#################.................]  50.0%  2/4  7s elapsed  ETA 7s  2018: building design             
+  [#################.................]  50.0%  2/4  8s elapsed  ETA 8s  2018: fitting 99 params           
+  [#########################.........]  75.0%  3/4  15s elapsed  ETA 5s  2018: done                        
+  [#########################.........]  75.0%  3/4  15s elapsed  ETA 5s  2019: building design             
+  [#########################.........]  75.0%  3/4  16s elapsed  ETA 5s  2019: fitting 104 params          
+  [##################################] 100.0%  4/4  25s elapsed  ETA 0s  2019: done                        
+  peak memory so far 2.33 GB
+ test_year  n_train  n_test  n_params  converged  max_abs_coef  diverged  absorbed_levels  dropped_cols  condition_number      mae   b0_mae  mae_vs_b0_pct     rmse  b0_rmse  rmse_vs_b0_pct  n_short  mae_short  b0_mae_short  mae_short_vs_b0_pct
+      2016    72022   28884        90       True         5.240     False               62             2              54.8 0.048573 0.039403         23.272 0.145942 0.159988          -8.779     2051   0.475605        0.5551              -14.321
+      2017   100906   33299        97       True         5.120     False               55             2              60.4 0.035975 0.020863         72.434 0.106170 0.113719          -6.638     1333   0.418169        0.5212              -19.768
+      2018   134205   33691        99       True         5.068     False               53             2              90.8 0.057499 0.047102         22.073 0.168932 0.185991          -9.172     2367   0.584961        0.6705              -12.757
+      2019   167896   32107       104       True         4.130     False               52             2             126.8 0.062817 0.048465         29.614 0.174698 0.190227          -8.163     2259   0.598390        0.6888              -13.126
+
+  negative *_vs_b0_pct means the model beats the naive floor.
+
+  all folds converged, max|coef| <= 5.24 — no separation detected.
+
+==========================================================================================
+Step 2 of 2  final fit on the full window, for interpretation
+==========================================================================================
+    dropped constant : is_repeat_borrower
+    dropped constant : has_previous_loan
+    design condition number 141.1  (well conditioned)
+  design 200,000 x 105  (0.17 GB), fit needs roughly 1.0 GB
+    gender               ref=male         dummies=  1  absorbed=  0 rare levels into the reference
+    country_iso          ref=KE           dummies= 39  absorbed= 44 rare levels into the reference
+    sector               ref=Agriculture  dummies= 11  absorbed=  7 rare levels into the reference
+    repayment_interval   ref=monthly      dummies=  2  absorbed=  0 rare levels into the reference
+    anonymization_level  ref=none         dummies=  1  absorbed=  1 rare levels into the reference
+    original_language    ref=EN           dummies=  4  absorbed=  0 rare levels into the reference
+    posting_month        ref=7            dummies= 11  absorbed=  0 rare levels into the reference
+    posting_dow          ref=1            dummies=  6  absorbed=  0 rare levels into the reference
+  fitting with HC0 robust errors ...
+  converged=True  max|coef|=3.84  in 12s  peak 2.33 GB
+  pseudo-R2 0.269616   in-sample MAE 0.050648   MAE on short 0.432349
+  weighted information matrix cond(A) = 8.879e+08
+
+  APE scale (mean p(1-p)) = 0.027964; ape column = coef x scale,
+  i.e. the change in expected share_raised per unit of the predictor.
+
+  TOP 20 TERMS BY |z| (robust HC0)
+
+                                    term     coef  robust_se      z   p_value       ape
+                                   const  3.84412    0.06644  57.86   <1e-300  0.107498
+               gender=female  [ref male]  1.58667    0.03082  51.49   <1e-300  0.044370
+                  min_note_size (per SD) -0.19030    0.00388 -49.00   <1e-300 -0.005322
+        sector=Retail  [ref Agriculture] -1.01273    0.03796 -26.68 8.24e-157 -0.028320
+                log_loan_amount (per SD) -1.60161    0.06751 -23.73 1.97e-124 -0.044788
+                    theme_crop_insurance -1.69024    0.07323 -23.08 7.31e-118 -0.047266
+       sector=Housing  [ref Agriculture] -1.12342    0.05140 -21.86 6.50e-106 -0.031416
+          lender_repayment_term (per SD) -0.27303    0.01304 -20.93  2.82e-97 -0.007635
+                posting_month=2  [ref 7]  1.37102    0.06659  20.59  3.35e-94  0.038340
+                              tag_parent -0.54852    0.02791 -19.66  5.19e-86 -0.015339
+                         tag_woman_owned -0.69451    0.03698 -18.78  1.09e-78 -0.019421
+      sector=Clothing  [ref Agriculture] -0.98573    0.05403 -18.24  2.27e-74 -0.027565
+                posting_month=3  [ref 7]  0.97445    0.05515  17.67  7.40e-70  0.027250
+             description_length (per SD)  0.23530    0.01367  17.22  2.04e-66  0.006580
+          sector=Food  [ref Agriculture] -0.56511    0.03784 -14.93  2.00e-50 -0.015803
+                       n_themes (per SD)  0.50089    0.03455  14.50  1.27e-47  0.014007
+                country_iso=NG  [ref KE] -2.01708    0.13997 -14.41  4.39e-47 -0.056406
+sector=Transportation  [ref Agriculture] -0.81830    0.06171 -13.26  3.90e-40 -0.022883
+          original_language=FR  [ref EN]  1.82063    0.14058  12.95  2.33e-38  0.050913
+                 borrower_count (per SD)  0.43082    0.03449  12.49  8.33e-36  0.012048
+
+  GENDER TERMS (the equity coefficients)
+
+                     term    coef  robust_se     z p_value     ape
+gender=female  [ref male] 1.58667    0.03082 51.49 <1e-300 0.04437
+
+==========================================================================================
+R002 complete
+==========================================================================================
+  -> outputs/tables/R002_logit_folds.csv
+  -> outputs/tables/R002_logit_coefficients.csv
+  -> outputs/tables/R002_logit_ape.csv
+
+  Record as R002 in RESULTS_LOG section 4 and fill section 6.

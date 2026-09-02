@@ -1,0 +1,4 @@
+group,attempted,feasible,feasibility_pct,median_distance,mean_distance,median_changes,median_amount_cut_pct
+female,89,89,100.0,0.2447,0.3302,1.0,20.0
+male,200,200,100.0,0.3911,0.4186,1.0,20.0
+all,289,289,100.0,0.2447,0.3914,1.0,20.0

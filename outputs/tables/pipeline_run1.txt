@@ -1,0 +1,297 @@
+
+==========================================================================================
+who-gets-funded  R003 gradient boosting, fractional target, temporal CV
+==========================================================================================
+  engine   : lightgbm
+  features : outputs/tables/feat_v1_dev200k.csv
+  200,003 rows, 45 features (9 categorical incl. partner_id and activity)
+
+==========================================================================================
+Step 1 of 2  temporal cross-validation (4 folds)
+==========================================================================================
+
+  [..................................]   0.0%        0/4  0s elapsed  ETA 0s  2016: fitting on 72,022       
+  [########..........................]  25.0%        1/4  1s elapsed  ETA 4s  2016: done                    
+  [########..........................]  25.0%        1/4  1s elapsed  ETA 4s  2017: fitting on 100,906      
+  [#################.................]  50.0%        2/4  3s elapsed  ET==============================================================================
+who-gets-funded  model pipeline
+==============================================================================
+  features : outputs/tables/feat_v1_dev200k.csv
+  log      : outputs/tables/pipeline_log_20260818_1225.txt
+  steps    : 06, 07, 08, 09, 10, 11, 12
+
+##############################################################################
+# STEP 06  R003 GBM fractional, temporal CV
+# src/models/06_gbm_temporal_cv.py
+##############################################################################
+A 3s  2017: done                    
+  [#################.................]  50.0%        2/4  3s elapsed  ETA 3s  2018: fitting on 134,205      
+  [#########################.........]  75.0%        3/4  6s elapsed  ETA 2s  2018: done                    
+  [#########################.........]  75.0%        3/4  6s elapsed  ETA 2s  2019: fitting on 167,896      
+  [##################################] 100.0%        4/4  8s elapsed  ETA 0s  2019: done                    
+ test_year  n_train  best_iteration      mae   b0_mae  mae_vs_b0_pct  r002_mae     rmse  rmse_vs_b0_pct  mae_short  b0_mae_short  mae_short_vs_b0_pct
+      2016    72022              73 0.046220 0.039403         17.301  0.048573 0.144465          -9.702   0.467148        0.5551              -15.844
+      2017   100906              93 0.032881 0.020863         57.606  0.035975 0.105433          -7.286   0.414110        0.5212              -20.547
+      2018   134205             250 0.052319 0.047102         11.076  0.057499 0.164655         -11.471   0.562753        0.6705              -16.070
+      2019   167896              93 0.056242 0.048465         16.048  0.062817 0.168812         -11.258   0.582508        0.6888              -15.431
+
+  negative *_vs_b0_pct beats the naive floor; r002_mae is the logit.
+
+==========================================================================================
+Step 2 of 2  canonical model (train<=2018) for SHAP / counterfactuals
+==========================================================================================
+  fitted in 1s  (best iteration 93)
+  model saved -> outputs/models/R003_gbm_frac.pkl  (0.7 MB)
+  test-2019 predictions -> R003_test2019_predictions.csv (32,107 rows)
+  figure -> outputs/figures/F13_gbm_gain_importance.png
+
+==========================================================================================
+R003 complete
+==========================================================================================
+  record in RESULTS_LOG §4; comparison figures come from step 12
+
+  PIPELINE [####..............................] step 1/7 complete  (12s total)
+
+==========================================================================================
+who-gets-funded  R004 auxiliary binary model (for counterfactuals only)
+==========================================================================================
+  engine   : lightgbm
+  features : outputs/tables/feat_v1_dev200k.csv
+  positive class = SHORTFALL (is_fully_funded == 0)
+  200,003 rows, 45 features
+
+==========================================================================================
+Step 1 of 2  temporal cross-validation (4 folds)
+==========================================================================================
+
+  [..................................]   0.0%        0/4  0s elapsed  ETA 0s  2016: fitting on 72,022       
+  [########..........................]  25.0%        1/4  1s elapsed  ETA 4s  2016: done                    
+  [########..........................]  25.0%        1/4  1s elapsed  ETA 4s  2017: fitting on 100,906      
+  [#################.................]  50.0%        2/4  3s elaps
+##############################################################################
+# STEP 07  R004 binary aux model
+# src/models/07_gbm_binary_aux.py
+##############################################################################
+ed  ETA 3s  2017: done                    
+  [#################.................]  50.0%        2/4  3s elapsed  ETA 3s  2018: fitting on 134,205      
+  [#########################.........]  75.0%        3/4  5s elapsed  ETA 1s  2018: done                    
+  [#########################.........]  75.0%        3/4  5s elapsed  ETA 1s  2019: fitting on 167,896      
+  [##################################] 100.0%        4/4  7s elapsed  ETA 0s  2019: done                    
+ test_year      auc  pr_auc_short  pr_auc_floor_prevalence    brier  recall_short_at_0.5  precision_short_at_0.5  accuracy_pct  b3_accuracy_pct
+      2016 0.895786      0.387752                 0.071008 0.053710             0.118966                0.549550       93.0515          92.9014
+      2017 0.895951      0.280014                 0.040031 0.033845             0.162041                0.431138       95.7897          95.9969
+      2018 0.916437      0.434351                 0.070256 0.051076             0.133502                0.584104       93.2445          92.9753
+      2019 0.897232      0.384928                 0.070358 0.053682             0.081452                0.636678       93.2102          92.9636
+
+  floors: AUC 0.5, PR-AUC = prevalence, B3 accuracy with 0% recall.
+
+==========================================================================================
+Step 2 of 2  canonical model (train<=2018) for the counterfactual step
+==========================================================================================
+  fitted in 1s  (best iteration 91)
+  model saved -> outputs/models/R004_gbm_binary.pkl  (0.7 MB)
+  test-2019 scores -> R004_test2019_scores.csv (32,107 rows)
+  figure -> outputs/figures/F14_binary_roc_pr.png
+
+==========================================================================================
+R004 complete
+==========================================================================================
+
+  PIPELINE [#########.........................] step 2/7 complete  (23s total)
+
+==========================================================================================
+who-gets-funded  R005 out-of-regime test (2020+, frozen 2013-2018 models)
+==========================================================================================
+  ⚠ caveat (RESULTS_LOG §16 / open question 10): after Kiva's flexible-
+    funding change of 31 Jul 2019, share_raised may record partner-topped
+    amounts, so the target may not mean what it meant in the cohort.
+  1,254,757 out-of-regime rows, years 2020-2026
+  models: R003 (lightgbm), R004 (lightgbm), both train 2013-2018, frozen
+
+  [..................................]   0.0%        0/7  0s elapsed  ETA 0s  scoring 2020                  
+  [####..............................]  14.3%        1/7  0s elapsed  ETA 3s  2020 done                     
+  [####..............................]  14.3%        1/7  0s elapsed  ETA 3s  scoring 2021                  
+  [#########.........................]  28.6%        2/7  1s elapsed  ETA 2s  2021 done                    
+##############################################################################
+# STEP 08  R005 out-of-regime test
+# src/models/08_oot_regime_test.py
+##############################################################################
+ 
+  [#########.........................]  28.6%        2/7  1s elapsed  ETA 2s  scoring 2022                  
+  [##############....................]  42.9%        3/7  1s elapsed  ETA 2s  2022 done                     
+  [##############....................]  42.9%        3/7  1s elapsed  ETA 2s  scoring 2023                  
+  [###################...............]  57.1%        4/7  2s elapsed  ETA 1s  2023 done                     
+  [###################...............]  57.1%        4/7  2s elapsed  ETA 1s  scoring 2024                  
+  [########################..........]  71.4%        5/7  2s elapsed  ETA 1s  2024 done                     
+  [########################..........]  71.4%        5/7  2s elapsed  ETA 1s  scoring 2025                  
+  [#############################.....]  85.7%        6/7  3s elapsed  ETA 0s  2025 done                     
+  [#############################.....]  85.7%        6/7  3s elapsed  ETA 0s  scoring 2026                  
+  [##################################] 100.0%        7/7  3s elapsed  ETA 0s  2026 done                     
+ posting_year      n  n_short  share_mean  naive_b0_mae  model_mae  mae_vs_b0_pct  model_rmse  mae_short  mean_pred_share  mean_pred_p_short  actual_short_rate      auc    brier
+         2020 173610     1677    0.992697      0.007303   0.021672         196.74    0.080405   0.621512         0.983003           0.028384           0.009660 0.909230 0.011328
+         2021 207522     1370    0.994400      0.005600   0.018793         235.59    0.081192   0.824811         0.986493           0.026443           0.006602 0.665839 0.011791
+         2022 191492      401    0.998783      0.001217   0.022568        1753.80    0.061578   0.454718         0.978104           0.038370           0.002094 0.816985 0.010344
+         2023 193312      426    0.998996      0.001004   0.022773        2168.25    0.061254   0.381096         0.977878           0.038372           0.002204 0.871628 0.010369
+         2024 194781      455    0.998763      0.001237   0.021803        1662.93    0.060982   0.409547         0.978825           0.036956           0.002336 0.905030 0.010202
+         2025 193106      621    0.997438      0.002562   0.022613         782.48    0.069047   0.647471         0.978982           0.036986           0.003216 0.916173 0.010714
+         2026 100934       40    0.999649      0.000351   0.019189        5361.04    0.054195   0.767610         0.981068           0.031643           0.000396 0.849435 0.006910
+
+  read mean_pred_p_short vs actual_short_rate: the frozen model keeps
+  predicting cohort-era shortfall into an era where the category has
+  almost disappeared — that over-prediction IS the regime finding.
+  figure -> outputs/figures/F15_oot_degradation.png
+
+==========================================================================================
+R005 complete
+==========================================================================================
+
+  PIPELINE [##############....................] step 3/7 complete  (33s total)
+
+==========================================================================================
+who-gets-funded  R006 SHAP (exact TreeSHAP via native pred_contrib)
+==========================================================================================
+  model: R003 lightgbm, train 2013-2018
+  explaining 20,000 of 32,107 test-2019 rows (seed 40465466)
+  contributions computed in 2s  (20,000 x 46)
+
+  top 10 by mean |SHAP| (log-odds scale; base value 5.4805):
+ rank               feature  mean_abs_shap  mean_shap_signed  share_of_total_pct
+    1 lender_repayment_term        0.73488          -0.04483            22.38378
+    2       log_loan_amount        0.72673           0.13480            22.13555
+    3            partner_id        0.36714           0.05417            11.18265
+    4           n_tags_desc        0.26119          -0.04006             7.95566
+    5                gender        0.25546           0.02896             7.78093
+    6              activity        0.21824          -0.01045             6.64745
+    
+##############################################################################
+# STEP 09  R006 SHAP
+# src/explain/09_shap_analysis.py
+##############################################################################
+7   amount_per_borrower        0.21134          -0.03184             6.43716
+    8           posting_doy        0.16949           0.00491             5.16241
+    9            tag_parent        0.03661           0.00161             1.11519
+   10        borrower_count        0.03171           0.00459             0.96573
+  dependence data for ['lender_repayment_term', 'log_loan_amount', 'partner_id', 'n_tags_desc']... -> R006_shap_dependence_top8.csv
+  figure -> outputs/figures/F16_shap_global_bar.png
+  figure -> outputs/figures/F17_shap_beeswarm.png
+  figure -> outputs/figures/F18_shap_gender_compare.png
+
+==========================================================================================
+R006 complete
+==========================================================================================
+
+  PIPELINE [###################...............] step 4/7 complete  (37s total)
+
+==========================================================================================
+who-gets-funded  R007 counterfactual recourse search (binary aux model)
+==========================================================================================
+  test-2019: 32,107 loans, 289 predicted below threshold 0.5
+  attempting 289 instances (gender mix preserved: {'male': np.int64(200), 'female': np.int64(89)})
+  text targets (train-funded p50/p75/p90): {'use_text_length': [56, 78, 102], 'description_length': [621, 827, 1073]}
+  action set: 27 candidate moves in 8 families; protected attributes frozen
+
+  [..................................]   0.0%        0/3  0s elapsed  ETA 0s  depth 1: 6,926 candidates     
+  [###########.......................]  33.3%        1/3  0s elapsed  ETA 1s  depth 1: 286 flipped          
+  [###########.......................]  33.3%        1/3  0s elapsed  ETA 1s  depth 2: 39 candidates        
+  [######################............]  66.7%        2/3  0s elapsed  ETA 0s  depth 2: 289 fli
+##############################################################################
+# STEP 10  R007 counterfactuals
+# src/explain/10_counterfactuals.py
+##############################################################################
+pped          
+ attempted  feasible  feasibility_pct  median_distance  median_changes  median_amount_cut_pct  threshold  max_changes   engine
+       289       289            100.0           0.2447             1.0                   20.0        0.5            3 lightgbm
+  figure -> outputs/figures/F19_cf_actions.png
+
+==========================================================================================
+R007 complete — step 11 audits these by group
+==========================================================================================
+
+  PIPELINE [########################..........] step 5/7 complete  (39s total)
+
+==========================================================================================
+who-gets-funded  R008 fairness of recourse
+==========================================================================================
+  289 attempted instances (female 89, male 200)
+
+  BY GENDER (raw)
+
+ group  attempted  feasible  feasibility_pct  median_distance  mean_distance  median_changes  median_amount_cut_pct
+female         89        89            100.0           0.2447         0.3302             1.0                   20.0
+  male        200       200            100.0           0.3911         0.4186             1.0                   20.0
+   all        289       289            100.0           0.2447         0.3914             1.0                   20.0
+
+  TESTS (no interpretation here)
+
+                                        test   stat  p_value                    effect
+feasibility two-proportion z (female - male)    0.0 1.000000                   +0.00pp
+ Mann-Whitney U on distance (successful CFs) 7480.5 0.026752 med
+##############################################################################
+# STEP 11  R008 recourse audit
+# src/equity/11_recourse_audit.py
+##############################################################################
+ian F 0.245 vs M 0.391
+Mann-Whitney U on n_changes (successful CFs) 8766.5 0.248044 median F 1.000 vs M 1.000
+
+  WITHIN COUNTRY x SECTOR (1 cells with >= 10 of each gender)
+    median within-cell distance gap (F - M): -0.1690   cells where women need more: 0/1
+  figure -> outputs/figures/F20_recourse_gap.png
+
+==========================================================================================
+R008 complete
+==========================================================================================
+
+  PIPELINE [#############################.....] step 6/7 complete  (40s total)
+
+==========================================================================================
+who-gets-funded  R009 model comparison assembly
+==========================================================================================
+
+  T1 — fractional MAE by fold
+
+test_year                    2016      2017      2018      2019
+model                                                          
+B0 naive (constant 1.0)  0.039403  0.020863  0.047102  0.048465
+R002 fractional logit    0.048573  0.035975  0.057499  0.062817
+R003 gradient boosting   0.046220  0.032881  0.052319  0.056242
+
+  T1 — MAE restricted to shortfall loans
+
+test_year                  2016    2017    2018    2019
+model                                                  
+B0 naive (constant 1.0)  0.5551  0.5212  0.6705  0.6888
+R002 fractional logit    0.4756  0.4182  0.5850  0.5984
+R003 gradient boosting   0.4671  0.4141  0.5628  0.5825
+
+  T2 — headline (means over the four folds; negative % beats B0)
+
+                  model  mean_mae  mean_rmse  mean_m
+##############################################################################
+# STEP 12  R009 comparison folder
+# src/models/12_compare_models.py
+##############################################################################
+ae_short  mae_vs_b0_pct  rmse_vs_b0_pct  mae_short_vs_b0_pct
+B0 naive (constant 1.0)  0.038958   0.162481        0.608900           0.00            0.00                 0.00
+  R002 fractional logit  0.051216   0.148936        0.519281          31.46           -8.34               -14.72
+ R003 gradient boosting  0.046916   0.145841        0.506630          20.43          -10.24               -16.80
+
+  T3 — binary aux vs floors
+
+ test_year      auc  pr_auc_short  pr_auc_floor_prevalence    brier  recall_short_at_0.5  precision_short_at_0.5  accuracy_pct  b3_accuracy_pct
+      2016 0.895786      0.387752                 0.071008 0.053710             0.118966                0.549550       93.0515          92.9014
+      2017 0.895951      0.280014                 0.040031 0.033845             0.162041                0.431138       95.7897          95.9969
+      2018 0.916437      0.434351                 0.070256 0.051076             0.133502                0.584104       93.2445          92.9753
+      2019 0.897232      0.384928                 0.070358 0.053682             0.081452                0.636678       93.2102          92.9636
+  figure -> outputs/model_comparison/F21_mae_by_fold.png
+  figure -> outputs/model_comparison/F22_mae_short_by_fold.png
+  figure -> outputs/model_comparison/F23_rmse_by_fold.png
+
+==========================================================================================
+R009 complete
+==========================================================================================
+  everything -> outputs/model_comparison/
+
+  PIPELINE [##################################] step 7/7 complete  (41s total)
+
+PIPELINE COMPLETE in 41s
+  everything is in outputs/model_comparison/   (log: outputs/tables/pipeline_log_20260818_1225.txt)

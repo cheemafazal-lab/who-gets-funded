@@ -1,0 +1,390 @@
+
+== D01  numeric summary, all 3,132,059 rows =================================
+n        loan_amt_mean  loan_amt_mean_sq  loan_amt_min  loan_amt_max  funded_mean  share_mean  share_mean_sq  borrowers_mean  borrowers_max  use_len_mean  use_len_max  desc_len_mean  desc_len_max  window_days_mean  window_days_min   window_days_max   repay_term_mean  research_score_mean
+-------  -------------  ----------------  ------------  ------------  -----------  ----------  -------------  --------------  -------------  ------------  -----------  -------------  ------------  ----------------  ----------------  ----------------  ---------------  -------------------
+3132059  811.95         4704825.8         5.0           500000.0      783.7        0.978992    0.973358       1.8558          50             61.35         2149         684.88         17834         33.79             1.90478009259259  2717.27180555556  13.1899          6.9132             
+Run Time: real 67.571 user 2.952788 sys 6.891153
+
+== D02  missingness across every analysis-relevant column ===================
+loan_amount  funded_amount  share_raised  borrower_count  is_group  gender  borrower_genders  sector  activity  country_iso  region  fundraising_date  planned_expiration_date  fundraising_window_days  repayment_interval  lender_repayment_term  distribution_model  anonymization_level  tags  themes  use_text_length  description_length  original_language  is_repeat_borrower  is_matchable  match_ratio  partner_id  research_score
+-----------  -------------  ------------  --------------  --------  ------  ----------------  ------  --------  -----------  ------  ----------------  -----------------------  -----------------------  ------------------  ---------------------  ------------------  -------------------  ----  ------  ---------------  ------------------  -----------------  ------------------  ------------  -----------  ----------  --------------
+0            0              0             0               0         0       0                 0       0         0            0       0                 371810                   371810                   0                   0                      0                   0                    0     24116   115786           137436              0                  0                   0             3132057      24116       197282        
+Run Time: real 71.865 user 3.805386 sys 6.615831
+
+== D03  binary flags and empty-string counts, single pass ===================
+is_group_1  is_matchable_1  repeat_borrower_1  in_pfp_1  delinquent_1  has_previous_loan  tags_blank  themes_blank  use_text_empty  desc_empty
+----------  --------------  -----------------  --------  ------------  -----------------  ----------  ------------  --------------  ----------
+363916      2               473                0         0             473                1090322     1283618       115786          137436    
+Run Time: real 72.050 user 3.030088 sys 6.946848
+
+== D04  by status ===========================================================
+status       n        pct     share_mean  loan_amt_mean  loan_amt_min  loan_amt_max  borrowers_mean  use_len_mean  window_days_mean
+-----------  -------  ------  ----------  -------------  ------------  ------------  --------------  ------------  ----------------
+funded       3024353  96.561  1.0         791.51         5.0           500000.0      1.857           61.2          33.64           
+expired      93321    2.98    0.444129    1402.01        125.0         100000.0      1.826           65.2          37.99           
+refunded     10480    0.335   0.0         1179.17        25.0          499825.0      1.872           NULL          35.13           
+fundraising  3905     0.125   0.118226    1558.02        250.0         25000.0       1.738           68.7          35.05           
+Run Time: real 101.148 user 2.769260 sys 8.329289
+
+== D05  by gender ===========================================================
+gender       n        pct     expired  expiry_pct  share_mean  loan_amt_mean  borrowers_mean  group_loans  use_len_mean  matchable
+-----------  -------  ------  -------  ----------  ----------  -------------  --------------  -----------  ------------  ---------
+female       2483698  79.299  45082    1.815       0.985965    780.1          1.956           310504       62.1          0        
+male         648312   20.699  48238    7.441       0.952281    933.45         1.472           53412        58.5          2        
+nonbinary    27       0.001   0        0.0         0.987315    8148.15        1.0             0            71.5          0        
+unspecified  22       0.001   1        4.545       0.955545    7659.09        1.0             0            60.4          0        
+Run Time: real 84.096 user 3.236058 sys 7.281879
+
+== D06  by sector ==========================================================
+sector                n       pct     expired  expiry_pct  share_mean  loan_amt_mean  female  female_pct
+--------------------  ------  ------  -------  ----------  ----------  -------------  ------  ----------
+Agriculture           864262  27.594  26088    3.019       0.978487    729.29         618192  71.53     
+Food                  693904  22.155  16522    2.381       0.982416    835.23         615006  88.63     
+Retail                594649  18.986  20795    3.497       0.976167    785.08         524550  88.21     
+Services              187665  5.992   6935     3.695       0.973204    1097.73        141784  75.55     
+Housing               151463  4.836   6921     4.569       0.972745    633.39         121247  80.05     
+Clothing              134360  4.29    5497     4.091       0.972164    1084.64        122233  90.97     
+Education             113107  3.611   922      0.815       0.993115    853.48         75657   66.89     
+Personal Use          71507   2.283   2079     2.907       0.982351    422.31         52163   72.95     
+Arts                  65127   2.079   208      0.319       0.992965    1034.57        58937   90.5      
+Transportation        58072   1.854   3929     6.766       0.957391    744.32         25602   44.09     
+Clean Energy          42266   1.349   155      0.367       0.988235    651.81         25621   60.62     
+Health                41730   1.332   1796     4.304       0.970837    1110.65        27100   64.94     
+Construction          32721   1.045   744      2.274       0.98173     1021.07        15253   46.62     
+Reuse & Recycle       32347   1.033   525      1.623       0.988197    894.55         28104   86.88     
+Manufacturing         26678   0.852   37       0.139       0.995641    848.63         14509   54.39     
+Sanitation & Hygiene  12480   0.398   1        0.008       0.999794    251.76         12008   96.22     
+Water                 3531    0.113   18       0.51        0.992366    2632.71        2352    66.61     
+Wholesale             3181    0.102   69       2.169       0.980491    1595.97        1920    60.36     
+Entertainment         3009    0.096   80       2.659       0.980021    1647.27        1460    48.52     
+Run Time: real 338.978 user 4.112451 sys 18.123422
+
+== D07  by country, top 30 of all countries ================================
+country_iso  country_name  n       expired  expiry_pct  share_mean  loan_amt_mean  female_pct
+-----------  ------------  ------  -------  ----------  ----------  -------------  ----------
+PH           Philippines   736655  4895     0.664       0.995043    329.37         95.12     
+KE           Kenya         390669  12803    3.277       0.975214    423.48         77.02     
+SV           El Salvador   126563  9693     7.659       0.957306    682.25         63.32     
+UG           Uganda        115063  5952     5.173       0.959481    790.45         57.24     
+KH           Cambodia      112363  2069     1.841       0.986632    649.89         83.22     
+PE           Peru          108119  1736     1.606       0.987174    1095.82        73.07     
+TJ           Tajikistan    103705  4429     4.271       0.973576    900.56         69.85     
+EC           Ecuador       103242  2342     2.268       0.985733    1068.6         78.62     
+CO           Colombia      87488   9428     10.776      0.931227    661.39         57.61     
+NI           Nicaragua     79143   2564     3.24        0.96892     835.12         68.17     
+PK           Pakistan      72702   2123     2.92        0.977851    515.95         96.53     
+MG           Madagascar    60759   29       0.048       0.994112    255.63         70.36     
+PY           Paraguay      53768   566      1.053       0.991903    2598.16        83.56     
+ID           Indonesia     48717   721      1.48        0.991757    489.32         94.65     
+VN           Vietnam       44799   1187     2.65        0.981222    1231.14        93.75     
+TG           Togo          42242   163      0.386       0.990742    508.59         87.08     
+LR           Liberia       40445   12       0.03        0.999143    427.01         98.3      
+HN           Honduras      35911   1081     3.01        0.975082    830.9          63.49     
+SN           Senegal       34350   494      1.438       0.982368    1955.7         90.7      
+GH           Ghana         33893   347      1.024       0.985583    801.8          84.27     
+RW           Rwanda        33533   1538     4.587       0.969316    2380.29        63.7      
+SL           Sierra Leone  33396   590      1.767       0.989078    587.8          86.64     
+BO           Bolivia       31799   2017     6.343       0.960737    2131.22        69.01     
+LB           Lebanon       31028   2429     7.828       0.947625    1316.59        57.71     
+KG           Kyrgyzstan    30599   1690     5.523       0.967941    1232.97        84.44     
+NG           Nigeria       29875   1271     4.254       0.959006    430.27         35.02     
+WS           Samoa         29371   1949     6.636       0.956608    809.03         99.61     
+MX           Mexico        28837   848      2.941       0.977345    1564.21        68.19     
+IN           India         27254   280      1.027       0.99342     588.28         98.55     
+JO           Jordan        26383   1859     7.046       0.957578    1111.06        72.8      
+Run Time: real 338.926 user 5.135106 sys 17.718902
+-- country cardinality --
+countries  regions  activities  sectors  partners
+---------  -------  ----------  -------  --------
+104        8        168         19       639     
+Run Time: real 71.049 user 3.041426 sys 6.683191
+
+== D08  by posting year ====================================================
+yr    n       expired  expiry_pct  refunded  still_live  share_mean  loan_amt_mean  window_days_mean  no_expiry_date  female_pct  loan_direct
+----  ------  -------  ----------  --------  ----------  ----------  -------------  ----------------  --------------  ----------  -----------
+2005  55      0        0.0         0         0           1.0         483.64         NULL              55              52.73       0          
+2006  3043    0        0.0         324       0           0.893526    679.77         NULL              3043            70.62       0          
+2007  25698   0        0.0         277       0           0.989221    633.69         NULL              25698           74.86       0          
+2008  50122   0        0.0         338       0           0.993255    723.24         NULL              50122           80.13       0          
+2009  81348   66       0.081       813       0           0.989578    711.73         NULL              81348           78.95       0          
+2010  92686   98       0.106       1641      0           0.981742    773.2          NULL              92686           75.46       0          
+2011  112484  48       0.043       795       0           0.992834    819.26         127.76            111961          71.41       22         
+2012  134315  6859     5.107       331       0           0.974961    890.99         33.49             6897            71.65       480        
+2013  141103  4056     2.874       336       0           0.986694    947.9          36.41             0               72.94       1467       
+2014  172954  9475     5.478       384       0           0.975034    878.63         33.19             0               75.56       5455       
+2015  182933  12938    7.073       762       0           0.965495    858.85         31.2              0               76.49       4802       
+2016  195885  14079    7.187       324       0           0.958169    824.36         31.38             0               77.62       1392       
+2017  225851  9202     4.074       264       0           0.977489    778.31         30.58             0               79.83       1741       
+2018  228354  16031    7.02        762       0           0.949584    780.45         30.48             0               78.22       1114       
+2019  218015  15269    7.004       1311      0           0.945747    775.29         31.54             0               78.96       856        
+2020  175312  1700     0.97        574       0           0.9894      774.9          41.73             0               81.01       1133       
+2021  209103  1370     0.655       271       0           0.993146    747.3          33.11             0               83.49       1326       
+2022  193236  555      0.287       231       0           0.997093    842.22         36.15             0               82.58       1515       
+2023  194466  453      0.233       244       0           0.997673    816.07         35.37             0               82.33       913        
+2024  196017  456      0.233       339       0           0.99704     792.63         35.11             0               83.82       900        
+2025  193886  626      0.323       111       0           0.996851    821.09         35.02             0               84.9        670        
+2026  105193  40       0.038       48        3905        0.966473    870.78         35.03             0               85.14       330        
+Run Time: real 67.808 user 3.576189 sys 7.047972
+
+== D09  group size bands ===================================================
+band   n        share_mean  expiry_pct  loan_amt_mean
+-----  -------  ----------  ----------  -------------
+1      2768143  0.979003    2.961       654.13       
+2-4    129472   0.980188    2.918       954.02       
+5-9    115936   0.975842    3.495       2056.64      
+10-19  91638    0.97766     3.415       2693.16      
+20+    26870    0.990207    1.481       4599.75      
+Run Time: real 68.593 user 3.142111 sys 6.883676
+
+== D10  categorical distributions ==========================================
+-- repayment_interval --
+v            n        share_mean  expiry_pct
+-----------  -------  ----------  ----------
+monthly      2737886  0.980254    2.76      
+at_end       248366   0.969272    4.742     
+irregularly  145807   0.971861    4.104     
+Run Time: real 66.897 user 2.990211 sys 6.911313
+-- distribution_model --
+v             n        share_mean  expiry_pct
+------------  -------  ----------  ----------
+fieldPartner  3107943  0.979261    2.962     
+direct        24116    0.944374    5.27      
+Run Time: real 68.084 user 2.879573 sys 6.987656
+-- anonymization_level --
+v       n        share_mean
+------  -------  ----------
+none    3008819  0.981986  
+full    79570    0.854281  
+public  36216    0.999965  
+pii     7454     1.0       
+Run Time: real 67.061 user 2.683854 sys 6.916334
+-- original_language, top 15 --
+v   n        share_mean  expiry_pct
+--  -------  ----------  ----------
+EN  2185115  0.981262    2.57      
+ES  651716   0.969779    4.606     
+FR  199854   0.989168    0.99      
+RU  76831    0.966184    5.909     
+PT  15220    0.974556    4.152     
+VI  1972     0.99645     0.0       
+ID  1005     0.99801     0.0       
+AR  346      1.0         0.0       
+Run Time: real 67.495 user 2.909801 sys 6.851142
+-- typename --
+v            n        share_mean  expiry_pct  loan_amt_mean
+-----------  -------  ----------  ----------  -------------
+LoanPartner  3107943  0.979261    2.962       786.97       
+LoanDirect   24116    0.944374    5.27        4031.05      
+Run Time: real 67.488 user 3.045766 sys 6.981525
+
+== D11  match funding ======================================================
+is_matchable  match_ratio  n        share_mean  expiry_pct  loan_amt_mean
+------------  -----------  -------  ----------  ----------  -------------
+0             NULL         3132057  0.978992    2.98        811.94       
+1             1            2        0.474259    0.0         14250.0      
+Run Time: real 74.837 user 3.061273 sys 7.179559
+-- matcher_name, top 15 --
+matcher                   n        share_mean  expiry_pct
+------------------------  -------  ----------  ----------
+(null)                    3132057  0.978992    2.98      
+Walton Family Foundation  2        0.474259    0.0       
+Run Time: real 78.600 user 3.299645 sys 7.770758
+
+== D12  lender_repayment_term bands ========================================
+band   n        share_mean  expiry_pct
+-----  -------  ----------  ----------
+13-24  1429251  0.970733    4.305     
+7-12   1319425  0.991743    0.932     
+<=6    166658   0.994502    0.126     
+25-36  158341   0.937451    10.023    
+37+    58384    0.961416    5.866     
+Run Time: real 70.456 user 3.250046 sys 7.186095
+
+== D13  partner concentration, top 20 ======================================
+partner_id  partner_name                                        n       pct     share_mean  expiry_pct  loan_amt_mean
+----------  --------------------------------------------------  ------  ------  ----------  ----------  -------------
+145         Negros Women for Tomorrow Foundation (NWTF)         527371  16.838  0.996231    0.453       313.47       
+156         Juhudi Kilimo                                       151929  4.851   0.983879    1.867       358.86       
+125         Community Economic Ventures, Inc. (CEVI)            86072   2.748   0.995239    0.703       322.97       
+199         CrediCampo                                          71102   2.27    0.960199    6.704       663.86       
+137         Fundación ESPOIR                                    61920   1.977   0.996253    0.176       1077.81      
+133         VisionFund Kenya                                    61792   1.973   0.970519    4.009       431.91       
+58          Fundación Paraguaya                                 52539   1.677   0.991842    1.056       2577.28      
+177         Interactuar                                         51270   1.637   0.9255      12.657      626.26       
+100         CJSC Bank Imon International                        50374   1.608   0.978924    3.555       921.84       
+63          CJSC "HUMO BANK"                                    45196   1.443   0.972721    4.16        907.54       
+406         Benteng Mikro Indonesia (BMI)                       40266   1.286   0.996805    0.44        378.88       
+123         Alalay sa Kaunlaran (ASKI)                          39012   1.246   0.980785    2.517       498.98       
+182         BRAC Liberia Microfinance Company Limited (BLMCL).  38496   1.229   0.999359    0.031       408.29       
+202         One Acre Fund                                       38266   1.222   0.971717    5.012       733.77       
+222         UGAFODE Microfinance                                34825   1.112   0.947528    6.961       947.33       
+245         Kashf Foundation                                    33759   1.078   0.995207    0.504       466.19       
+296         Assilassimé Solidarité                              31677   1.011   0.994897    0.11        412.21       
+359         Vahatra                                             31206   0.996   0.999064    0.074       233.16       
+119         Asociación Arariwa                                  31085   0.992   0.991966    0.132       1525.5       
+167         PADECOMSM                                           29522   0.943   0.964689    6.206       639.24       
+Run Time: real 70.773 user 3.853193 sys 7.198213
+
+== D14  narrative length by status =========================================
+status       use_len_mean  use_len_min  use_len_max  desc_len_mean  desc_len_min  desc_len_max
+-----------  ------------  -----------  -----------  -------------  ------------  ------------
+expired      65.2          1            364          722.8          1             3872        
+funded       61.2          1            2149         683.6          1             17834       
+fundraising  68.7          12           157          756.5          131           2047        
+refunded     NULL          NULL         NULL         NULL           NULL          NULL        
+Run Time: real 87.921 user 2.884111 sys 7.854549
+
+== D15  loan_amount bands vs outcome =======================================
+band         n       share_mean  expiry_pct  female_pct  borrowers_mean
+-----------  ------  ----------  ----------  ----------  --------------
+a <250       682904  0.997529    0.057       85.59       1.142         
+b 250-499    901293  0.991318    0.944       84.06       1.153         
+c 500-999    830683  0.97251     3.872       75.2        1.408         
+d 1000-2499  544885  0.951027    7.653       69.71       2.268         
+e 2500-4999  126082  0.96146     6.073       79.26       8.708         
+f 5000-9999  40689   0.961139    6.088       83.01       11.555        
+g 10000+     5523    0.941255    7.605       62.59       3.626         
+Run Time: real 79.987 user 3.350563 sys 7.578389
+
+== D16  gender x sector, mean share and expiry =============================
+sector                gender  n       share_mean  expiry_pct
+--------------------  ------  ------  ----------  ----------
+Agriculture           female  618192  0.987648    1.504     
+Agriculture           male    246066  0.955472    6.823     
+Arts                  female  58937   0.993398    0.277     
+Arts                  male    6184    0.988833    0.728     
+Clean Energy          female  25621   0.991939    0.113     
+Clean Energy          male    16645   0.982534    0.757     
+Clothing              female  122233  0.976651    3.31      
+Clothing              male    12125   0.926923    11.967    
+Construction          female  15253   0.992942    0.38      
+Construction          male    17468   0.97194     3.927     
+Education             female  75657   0.997215    0.118     
+Education             male    37447   0.984859    2.222     
+Entertainment         female  1460    0.988084    1.712     
+Entertainment         male    1546    0.972368    3.558     
+Food                  female  615006  0.987115    1.587     
+Food                  male    78893   0.945783    8.574     
+Health                female  27100   0.980813    2.712     
+Health                male    14627   0.952348    7.254     
+Housing               female  121247  0.984349    2.554     
+Housing               male    30215   0.926181    12.656    
+Manufacturing         female  14509   0.997133    0.021     
+Manufacturing         male    12169   0.993862    0.279     
+Personal Use          female  52163   0.989544    1.649     
+Personal Use          male    19344   0.962954    6.302     
+Retail                female  524550  0.982898    2.398     
+Retail                male    70090   0.925792    11.722    
+Reuse & Recycle       female  28104   0.991328    1.075     
+Reuse & Recycle       male    4243    0.967459    5.256     
+Sanitation & Hygiene  female  12008   0.999943    0.0       
+Sanitation & Hygiene  male    472     0.996001    0.212     
+Services              female  141784  0.980379    2.362     
+Services              male    45868   0.951018    7.818     
+Transportation        female  25602   0.981378    2.637     
+Transportation        male    32470   0.938478    10.022    
+Water                 female  2352    0.994926    0.043     
+Water                 male    1179    0.98726     1.442     
+Wholesale             female  1920    0.987443    0.677     
+Wholesale             male    1261    0.969906    4.441     
+Run Time: real 326.003 user 5.380791 sys 18.099530
+
+== D17  expired loans only: how far short did they fall? ===================
+band              n      pct_of_expired  loan_amt_mean  female_pct
+----------------  -----  --------------  -------------  ----------
+a raised nothing  2016   2.16            604.04         62.55     
+b <25%            21780  23.339          1421.22        44.47     
+c 25-49%          29948  32.091          1359.74        49.23     
+d 50-74%          26271  28.151          1408.56        48.89     
+e 75-94%          12514  13.41           1561.27        49.32     
+f 95%+            792    0.849           1770.17        47.73     
+Run Time: real 12.045 user 0.148642 sys 0.599532
+
+== D18  harvest_progress table =============================================
+batches  min_rowid  max_rowid
+-------  ---------  ---------
+64260    1          3212951  
+Run Time: real 0.096 user 0.002964 sys 0.005386
+batch_start  batch_end  n_returned  done_at            
+-----------  ---------  ----------  -------------------
+1            50         0           2026-07-29T21:37:51
+51           100        13          2026-07-29T21:37:53
+101          150        47          2026-07-29T21:37:55
+Run Time: real 0.000 user 0.000032 sys 0.000005
+batch_start  batch_end  n_returned  done_at            
+-----------  ---------  ----------  -------------------
+3212951      3213000    47          2026-08-07T02:25:18
+3212901      3212950    50          2026-08-07T02:25:15
+3212851      3212900    49          2026-08-07T02:25:11
+Run Time: real 0.000 user 0.000013 sys 0.000006
+
+== D19  indexes present on loans ===========================================
+name       sql                                              
+---------  -------------------------------------------------
+ix_fund    CREATE INDEX ix_fund   ON loans(fundraising_date)
+ix_status  CREATE INDEX ix_status ON loans(status)          
+ix_ctry    CREATE INDEX ix_ctry   ON loans(country_iso)     
+ix_sector  CREATE INDEX ix_sector ON loans(sector)          
+Run Time: real 0.000 user 0.000013 sys 0.000001
+
+== D20  sample of tags and themes values, for parsing later ================
+tags                                              n     
+------------------------------------------------  ------
+user_favorite                                     161081
+#Woman-Owned Business                             113619
+#Woman-Owned Business,#Parent                     106826
+user_favorite,#Woman-Owned Business,#Parent       41422 
+user_favorite,#Woman-Owned Business               37352 
+#Woman-Owned Business,#Repeat Borrower            32020 
+#Parent                                           28952 
+#Woman-Owned Business,#Parent,#Repeat Borrower    27734 
+#Woman-Owned Business,#Elderly                    26871 
+#Repeat Borrower                                  25146 
+#Elderly                                          20219 
+#Animals                                          20017 
+#Eco-friendly,#Health and Sanitation,#Technology  18265 
+#Woman-Owned Business,#Animals,#Parent            17921 
+volunteer_pick                                    17538 
+Run Time: real 67.396 user 2.765612 sys 6.902901
+themes                                                   n     
+-------------------------------------------------------  ------
+Underfunded Areas,Start-Up,Rural Exclusion               480328
+Underfunded Areas                                        187735
+Crop Insurance,Rural Exclusion                           141833
+Rural Exclusion                                          128567
+Earth Day Campaign,Water and Sanitation                  86298 
+Vulnerable Groups                                        80919 
+Conflict Zones                                           67294 
+Underfunded Areas,Rural Exclusion                        64110 
+Higher Education                                         47968 
+Crop Insurance,Rural Exclusion,Green,Solar,Clean Energy  31795 
+Water and Sanitation,Earth Day Campaign                  29242 
+Vulnerable Groups,Refugees/Displaced                     26718 
+Start-Up                                                 23400 
+Underfunded Areas,Vulnerable Groups,Refugees/Displaced   22911 
+Crop Insurance                                           20991 
+Run Time: real 71.919 user 2.674830 sys 6.952789
+
+== D21  [SORT] quantiles, loan_amount ======================================
+p01   p05    p25    median  p75    p95     p99   
+----  -----  -----  ------  -----  ------  ------
+75.0  125.0  250.0  475.0   900.0  2650.0  5575.0
+Run Time: real 78.021 user 5.316980 sys 7.292938
+
+== D22  [SORT] quantiles, use_text_length and description_length ===========
+col              p05  p25  median  p75  p95
+---------------  ---  ---  ------  ---  ---
+use_text_length  22   39   55      80   121
+Run Time: real 71.980 user 4.619297 sys 7.064037
+col                 p05  p25  median  p75  p95 
+------------------  ---  ---  ------  ---  ----
+description_length  330  460  613     845  1269
+Run Time: real 69.316 user 4.606784 sys 6.963166
+
+== D23  [SORT] quantiles of share_raised among expired loans only ==========
+p05                 p25    median             p75                p95              
+------------------  -----  -----------------  -----------------  -----------------
+0.0727272727272727  0.241  0.428571428571429  0.642857142857143  0.858333333333333
+Run Time: real 13.048 user 0.212129 sys 0.619517
+
+== end of descriptive statistics ===========================================

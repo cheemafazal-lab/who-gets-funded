@@ -1,0 +1,5 @@
+model,sample,mean_mae,mean_rmse,mean_mae_short,mae_vs_b0_pct,rmse_vs_b0_pct,mae_short_vs_b0_pct
+B0 naive (constant 1.0),full cohort,0.038958,0.162481,0.6089,0.0,0.0,0.0
+R002 fractional logit,dev 200k,0.051216,0.148936,0.519281,31.46,-8.34,-14.72
+R003 gradient boosting (untuned),dev 200k,0.046916,0.145841,0.50663,20.43,-10.24,-16.8
+R012 gradient boosting (tuned),full cohort,0.047496,0.144651,0.505719,21.92,-10.97,-16.95

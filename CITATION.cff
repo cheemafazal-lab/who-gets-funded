@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+title: >-
+  Who Gets Funded? An Automated, Explainable Machine-Learning
+  Pipeline for Predicting Funding Outcomes and Equity of Access
+  in Prosocial Crowdfunding
+message: >-
+  If you use this software, please cite it using the metadata
+  from this file.
+type: software
+authors:
+  - given-names: Fazal Ur Rehman
+    family-names: Cheema
+    affiliation: Queen's Business School, Queen's University Belfast
+repository-code: 'https://github.com/cheemafazal-lab/who-gets-funded'
+abstract: >-
+  An end-to-end pipeline for predicting funding outcomes in
+  prosocial crowdfunding and auditing the equity of access to
+  algorithmic recourse. The outcome is modelled as the fractional
+  share of the requested amount raised, using a Papke-Wooldridge
+  fractional logit baseline and gradient-boosted trees, with
+  TreeSHAP attribution and counterfactual search restricted to
+  an explicitly defined actionable feature set. Equity is assessed
+  across four distinct dimensions: outcome disparity, prediction
+  disparity, error-rate disparity, and the cost of recourse.
+keywords:
+  - crowdfunding
+  - microfinance
+  - explainable-machine-learning
+  - algorithmic-recourse
+  - counterfactual-explanations
+  - fairness-auditing
+  - fractional-response-models
+  - gradient-boosting
+license: MIT
+version: 1.0.0
+date-released: '2026-09-11'

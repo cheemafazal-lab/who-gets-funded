@@ -1,0 +1,4 @@
+figure_id,file,title
+F21,F21_mae_by_fold.png,"Overall MAE by fold, all models"
+F22,F22_mae_short_by_fold.png,"Shortfall MAE by fold, all models"
+F23,F23_rmse_by_fold.png,"RMSE by fold, all models"
